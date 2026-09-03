@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guest Invitation Generator — Frans & Fitri</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#0b0b0c;
+  --panel:#141416;
+  --gold:#d8c3a5;
+  --text:#f5f1eb;
+  --muted:#8e8b87;
+  --line:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;background:radial-gradient(circle at 20% 10%,#222 0,transparent 28%),var(--bg);
+  color:var(--text);font-family:Montserrat,Arial,sans-serif;
+}
+body:before,body:after{
+  content:"";position:fixed;width:45vw;height:45vw;border:1px solid rgba(216,195,165,.06);
+  border-radius:50%;pointer-events:none
+}
+body:before{left:-20vw;top:-20vw}body:after{right:-25vw;bottom:-25vw}
+.wrapper{width:min(900px,92vw);margin:auto;padding:55px 0 80px;position:relative}
+.header{text-align:center;margin-bottom:45px}
+.eyebrow{font-size:9px;letter-spacing:5px;color:var(--gold);margin-bottom:18px}
+h1{font-family:Italiana,serif;font-size:clamp(42px,7vw,76px);font-weight:400;margin:0}
+.subtitle{color:var(--muted);font-size:13px;line-height:1.8;max-width:560px;margin:18px auto 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{
+  background:rgba(20,20,22,.88);border:1px solid var(--line);padding:32px;
+  backdrop-filter:blur(16px);border-radius:4px
+}
+.card h2{font-family:Italiana,serif;font-size:35px;font-weight:400;margin:0 0 8px}
+.card p{font-size:12px;color:var(--muted);line-height:1.7;margin:0 0 24px}
+label{display:block;font-size:9px;letter-spacing:2px;color:#aaa;margin-bottom:10px}
+input{
+ width:100%;background:#0d0d0f;border:1px solid var(--line);color:#fff;
+ padding:16px;font-family:Montserrat;font-size:14px;outline:none;border-radius:2px
+}
+input:focus{border-color:var(--gold)}
+.preview{
+ min-height:250px;background:linear-gradient(145deg,#111,#0b0b0c);
+ border:1px solid var(--line);display:flex;flex-direction:column;
+ align-items:center;justify-content:center;text-align:center;padding:25px
+}
+.preview .small{font-size:8px;letter-spacing:5px;color:#777}
+.preview .names{font-family:Italiana,serif;font-size:45px;margin:14px 0;color:var(--gold)}
+.preview .dear{font-size:8px;letter-spacing:4px;color:#777}
+.preview .guest{font-family:Italiana,serif;font-size:34px;margin-top:10px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button,.button{
+ border:1px solid var(--line);padding:14px 18px;background:transparent;color:#fff;
+ font-family:Montserrat;font-size:9px;letter-spacing:1.8px;cursor:pointer;text-decoration:none;
+ transition:.25s;border-radius:2px
+}
+button:hover,.button:hover{transform:translateY(-2px);border-color:var(--gold)}
+.primary{background:var(--gold);color:#151515;border-color:var(--gold);font-weight:600}
+.link-box{
+ margin-top:24px;background:#0b0b0c;border:1px solid var(--line);padding:16px;
+ word-break:break-all;color:#bdb8b0;font-size:12px;line-height:1.7;min-height:78px
+}
+.section-title{font-family:Italiana,serif;font-size:40px;font-weight:400;margin:48px 0 18px}
+.list{display:flex;flex-direction:column;gap:10px}
+.list-item{border:1px solid var(--line);background:rgba(20,20,22,.75);padding:16px;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.list-name{font-size:13px}.list-link{font-size:10px;color:var(--muted);word-break:break-all}
+.list-actions{display:flex;gap:7px;flex-shrink:0}.small-btn{padding:9px 11px;font-size:8px}
+.empty{text-align:center;color:#777;font-size:12px;padding:25px;border:1px dashed var(--line)}
+.footer{text-align:center;color:#666;font-size:9px;letter-spacing:2px;margin-top:50px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);background:var(--gold);color:#111;padding:12px 18px;font-size:10px;letter-spacing:1px;opacity:0;transition:.3s;z-index:10}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){
+ .wrapper{padding-top:38px}.grid{grid-template-columns:1fr}.card{padding:24px}
+ .preview .names{font-size:38px}.list-item{align-items:flex-start;flex-direction:column}
+ .list-actions{width:100%}.list-actions button{flex:1}
+}
+
+/* ===== REFINED AMPERSAND ===== */
+.preview .names{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:13px;
+  color:var(--gold);
+}
+.preview .names span{
+  font-family:Italiana,serif;
+}
+.preview .names i{
+  font-family:Georgia,serif;
+  font-size:.58em;
+  font-style:italic;
+  font-weight:400;
+  color:#a88f69;
+  line-height:1;
+  transform:translateY(2px);
+}
+@media(max-width:700px){
+  .preview .names{gap:10px}
+}
+
+
+/* ===== CLEAR AMPERSAND IN DEAR / GUEST NAME ===== */
+.preview .guest{
+  font-family:Italiana,serif;
+  font-size:34px;
+  margin-top:10px;
+  line-height:1.25;
+}
+.preview .guest .guest-amp{
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:.82em;
+  font-weight:700;
+  font-style:normal;
+  color:#d8c3a5;
+  display:inline-block;
+  margin:0 .12em;
+  vertical-align:baseline;
+}
+@media(max-width:700px){
+  .preview .guest{font-size:31px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header class="header">
+    <div class="eyebrow">FRANS WILLIAM & FITRI SRI YULINAR</div>
+    <h1>Guest Invitation Generator</h1>
+    <p class="subtitle">Create personalized wedding invitation links for each of your guests in seconds.</p>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Create Invitation</h2>
+      <p>Enter the guest's name exactly as you want it to appear on the wedding opening screen.</p>
+
+      <label for="guestInput">GUEST NAME</label>
+      <input id="guestInput" type="text" placeholder="Example: Budi Santoso & Family" autocomplete="off">
+
+      <div class="actions">
+        <button class="primary" id="generateBtn">GENERATE LINK</button>
+        <button id="clearBtn">CLEAR</button>
+      </div>
+
+      <div class="link-box" id="linkOutput">Your personalized invitation link will appear here.</div>
+
+      <div class="actions">
+        <button id="copyBtn">COPY LINK</button>
+        <a class="button" id="openBtn" href="#" target="_blank">OPEN INVITATION</a>
+        <button id="waBtn">SHARE WHATSAPP</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Live Preview</h2>
+      <p>See how the guest name will appear before sharing the invitation.</p>
+      <div class="preview">
+        <div class="small">THE WEDDING OF</div>
+        <div class="names"><span>Frans</span><i>&amp;</i><span>Fitri</span></div>
+        <div class="dear">DEAR</div>
+        <div class="guest" id="previewName">Family <span class="guest-amp">&amp;</span> Friends</div>
+      </div>
+    </section>
+  </div>
+
+  <h2 class="section-title">Recent Guests</h2>
+  <div class="list" id="guestList"></div>
+  <div class="empty" id="emptyState">No guest links have been created yet.</div>
+
+  <div class="footer">PERSONALIZED WEDDING INVITATION · FRANS & FITRI</div>
+</div>
+
+<div class="toast" id="toast">LINK COPIED</div>
+
+<script>
+const BASE_URL = "https://wfrans990.github.io/Wedding/";
+
+const input = document.getElementById("guestInput");
+const preview = document.getElementById("previewName");
+const output = document.getElementById("linkOutput");
+const openBtn = document.getElementById("openBtn");
+const list = document.getElementById("guestList");
+const empty = document.getElementById("emptyState");
+const toast = document.getElementById("toast");
+
+let currentLink = "";
+let guests = JSON.parse(localStorage.getItem("fransFitriGuests") || "[]");
+
+function makeLink(name){
+  return BASE_URL + "?to=" + encodeURIComponent(name.trim());
+}
+
+function updatePreview(){
+  const name = input.value.trim() || "Family & Friends";
+  preview.innerHTML = escapeHtml(name).replace(/&amp;/g, '<span class="guest-amp">&amp;</span>');
+}
+
+function generate(){
+  const name = input.value.trim();
+  if(!name){
+    input.focus();
+    showToast("PLEASE ENTER A GUEST NAME");
+    return;
+  }
+  currentLink = makeLink(name);
+  output.textContent = currentLink;
+  openBtn.href = currentLink;
+
+  if(!guests.some(g => g.name.toLowerCase() === name.toLowerCase())){
+    guests.unshift({name, link:currentLink});
+    guests = guests.slice(0,100);
+    localStorage.setItem("fransFitriGuests", JSON.stringify(guests));
+  }
+  renderGuests();
+  showToast("INVITATION LINK CREATED");
+}
+
+function copyText(text){
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(()=>showToast("LINK COPIED"));
+}
+
+function shareWhatsApp(){
+  if(!currentLink){
+    generate();
+    if(!currentLink) return;
+  }
+  const name = input.value.trim() || "Family & Friends";
+  const message = `Dear ${name},%0A%0AYou are warmly invited to celebrate the wedding of Frans & Fitri.%0A%0A${currentLink}`;
+  window.open("https://wa.me/?text=" + message, "_blank");
+}
+
+function renderGuests(){
+  list.innerHTML = "";
+  empty.style.display = guests.length ? "none" : "block";
+
+  guests.forEach((guest,index)=>{
+    const item = document.createElement("div");
+    item.className = "list-item";
+    item.innerHTML = `
+      <div>
+        <div class="list-name">${escapeHtml(guest.name)}</div>
+        <div class="list-link">${escapeHtml(guest.link)}</div>
+      </div>
+      <div class="list-actions">
+        <button class="small-btn" onclick="copySaved(${index})">COPY</button>
+        <button class="small-btn" onclick="openSaved(${index})">OPEN</button>
+        <button class="small-btn" onclick="deleteSaved(${index})">DELETE</button>
+      </div>`;
+    list.appendChild(item);
+  });
+}
+
+function escapeHtml(value){
+  return value.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+function showToast(message){
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),1800);
+}
+
+window.copySaved = i => copyText(guests[i].link);
+window.openSaved = i => window.open(guests[i].link,"_blank");
+window.deleteSaved = i => {
+  guests.splice(i,1);
+  localStorage.setItem("fransFitriGuests",JSON.stringify(guests));
+  renderGuests();
+  showToast("GUEST REMOVED");
+};
+
+input.addEventListener("input", updatePreview);
+input.addEventListener("keydown", e => {if(e.key==="Enter") generate()});
+document.getElementById("generateBtn").addEventListener("click", generate);
+document.getElementById("copyBtn").addEventListener("click", ()=>copyText(currentLink));
+document.getElementById("waBtn").addEventListener("click", shareWhatsApp);
+document.getElementById("clearBtn").addEventListener("click", ()=>{
+  input.value=""; updatePreview(); currentLink="";
+  output.textContent="Your personalized invitation link will appear here.";
+  openBtn.href="#";
+});
+renderGuests();
+</script>
+</body>
+</html>
